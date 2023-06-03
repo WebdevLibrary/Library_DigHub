@@ -4,50 +4,21 @@ const prisma = new PrismaClient()
 
 const userData = [
   {
-    name: 'Alice',
-    email: 'alice@prisma.io',
-    posts: {
+    name: 'Gordon Freeman',
+    email: 'freeman@valve.com',
+    books: {
       create: [
         {
-          title: 'Join the Prisma Slack',
-          content: 'https://slack.prisma.io',
-          published: true,
-        },
-      ],
-    },
-  },
-  {
-    name: 'Nilu',
-    email: 'nilu@prisma.io',
-    posts: {
-      create: [
-        {
-          title: 'Follow Prisma on Twitter',
-          content: 'https://www.twitter.com/prisma',
-          published: true,
-          viewCount: 42,
-        },
-      ],
-    },
-  },
-  {
-    name: 'Mahmoud',
-    email: 'mahmoud@prisma.io',
-    posts: {
-      create: [
-        {
-          title: 'Ask a question about Prisma on GitHub',
-          content: 'https://www.github.com/prisma/prisma/discussions',
-          published: true,
-          viewCount: 128,
+          title: 'Book005',          
+          free: false,
         },
         {
-          title: 'Prisma on YouTube',
-          content: 'https://pris.ly/youtube',
-        },
+          title: 'Book006',
+          free: false
+        }
       ],
     },
-  },
+  }
 ]
 
 async function main() {
@@ -58,6 +29,20 @@ async function main() {
     })
     console.log(`Created user with id: ${user.id}`)
   }
+  // const user = await prisma.user.create({
+  //   data: {
+  //     name: "Gordan Freeman", 
+  //     books: {
+  //       create: [
+  //         {
+  //           title: "book001"
+  //         }
+  //       ]
+  //     }
+
+  //   }
+  // })
+
   console.log(`Seeding finished.`)
 }
 

@@ -4,8 +4,8 @@ const prisma = new PrismaClient()
 
 const userData = [
   {
-    name: 'Gordon Freeman',
-    email: 'freeman@valve.com',
+    name: 'Gordon Freeman2',
+    email: 'freeman2@valve.com',
     books: {
       create: [
         {
@@ -22,7 +22,10 @@ const userData = [
 ]
 
 async function main() {
-  console.log(`Start seeding ...`)
+  console.log(`Deleting the old records and start seeding ...`)
+  await prisma.user.deleteMany({})
+  await prisma.book.deleteMany({})
+
   for (const u of userData) {
     const user = await prisma.user.create({
       data: u,

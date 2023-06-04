@@ -12,26 +12,26 @@ const port = 3000
 app.use(express.static('views'))
 
 
-app.post(`/signup`, async (req, res) => {
-    const { name, email, posts } = req.body
-  
-    const postData = posts
-      ? posts.map((post) => {
-          return { title: post.title, content: post.content || undefined }
-        })
-      : []
-  
-    const result = await prisma.user.create({
-      data: {
-        name,
-        email,
-        posts: {
-          create: postData,
+  app.post(`/signup`, async (req, res) => {
+      const { name, email, books } = req.body
+    
+      const postData = books
+        ? books.map((post) => {
+            return { title: books.title, content: post.content || undefined }
+          })
+        : []
+    
+      const result = await prisma.user.create({
+        data: {
+          name,
+          email,
+          books: {
+            create: postData,
+          },
         },
-      },
+      })
+      res.json(result)
     })
-    res.json(result)
-  })
   
   app.post(`/post`, async (req, res) => {
     const { title, content, authorEmail } = req.body

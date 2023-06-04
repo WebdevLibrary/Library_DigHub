@@ -4,21 +4,38 @@ const prisma = new PrismaClient()
 
 const userData = [
   {
-    name: 'Gordon Freeman2',
-    email: 'freeman2@valve.com',
+    name: 'Gordon Freeman',
+    email: 'freeman@valve.com',
     books: {
       create: [
         {
-          title: 'Book005',          
+          title: 'Book001',          
           free: false,
         },
         {
-          title: 'Book006',
+          title: 'Book002',
           free: false
         }
       ],
     },
-  }
+  },
+  {
+    name: 'Alyx',
+    email: 'alyx@valve.com',
+    books: {
+      create: [
+        {
+          title: 'Book003',          
+          free: false,
+        },
+        {
+          title: 'Book004',
+          free: false
+        }
+      ],
+    },
+  },
+
 ]
 
 async function main() {

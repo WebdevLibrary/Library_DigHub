@@ -12,38 +12,37 @@ const port = 3000
 app.use(express.static('views'))
 
 
-  // app.post(`/signup`, async (req, res) => {
-  //     const { name, email, books } = req.body
+  app.post(`/signup`, async (req, res) => {
+      const { name, email, books } = req.body
     
-  //     const postData = books
-  //       ? books.map((book) => {
-  //           return { title: book.title || undefined }
-  //         })
-  //       : []
+      const postData = books
+        ? books.map((book) => {
+            return { title: book.title || undefined }
+          })
+        : []
     
-  //     const result = await prisma.user.create({
-  //       data: {
-  //         name,
-  //         email,
-  //         books: {
-  //           create: postData,
-  //         },
-  //       },
-  //     })
-  //     res.json(result)
-  //   })
+      const result = await prisma.user.create({
+        data: {
+          name,
+          email,
+          books: {
+            create: postData,
+          },
+        },
+      })
+      res.json(result)
+    })
   
-  // app.post(`/post`, async (req, res) => {
-  //   const { title, content, authorEmail } = req.body
-  //   const result = await prisma.post.create({
-  //     data: {
-  //       title,
-  //       content,
-  //       author: { connect: { email: authorEmail } },
-  //     },
-  //   })
-  //   res.json(result)
-  // })
+  app.post(`/bookCreate`, async (req, res) => {
+    const { title, author } = req.body
+    const result = await prisma.book.create({
+      data: {
+        title,       
+        author
+      },
+    })
+    res.json(result)
+  })
   
   // app.put('/post/:id/views', async (req, res) => {
   //   const { id } = req.params
@@ -97,33 +96,39 @@ app.use(express.static('views'))
   
   app.get('/users', async (req, res) => {
     const users = await prisma.user.findMany()
+    // res.status(200).json(users)   // ??
+    res.json(users)
+  })
+
+  app.get('/books', async (req, res) => {
+    const users = await prisma.book.findMany()
     res.json(users)
   })
   
-  // app.get('/user/:id/drafts', async (req, res) => {
-  //   const { id } = req.params
+  app.get('/user/:id/company', async (req, res) => {
+    const { id } = req.params
   
-  //   const drafts = await prisma.user
-  //     .findUnique({
-  //       where: {
-  //         id: Number(id),
-  //       },
-  //     })
-  //     .posts({
-  //       where: { published: false },
-  //     })
+    const drafts = await prisma.user
+      .findUnique({
+        where: {
+          id: Number(id),
+        },
+      })
+      .posts({
+        where: { published: false },
+      })
   
-  //   res.json(drafts)
-  // })
+    res.json(drafts)
+  })
   
-  // app.get(`/post/:id`, async (req, res) => {
-  //   const { id } = req.params
+  app.get(`/users/:id`, async (req, res) => {
+    const { id } = req.params
   
-  //   const post = await prisma.post.findUnique({
-  //     where: { id: Number(id) },
-  //   })
-  //   res.json(post)
-  // })
+    const user = await prisma.user.findUnique({
+      where: { id: Number(id) },
+    })
+    res.json(user)
+  })
   
   // app.get('/feed', async (req, res) => {
   //   const { searchString, skip, take, orderBy } = req.query
@@ -152,7 +157,7 @@ app.use(express.static('views'))
   
   //   res.json(posts)
   // })
-  
-  const server = app.listen(3000, () =>
-    console.log(`Server ready at: http://localhost:3000`)
-  )
+
+const server = app.listen(3000, () =>
+  console.log(`Server ready at: http://localhost:3000`)
+)

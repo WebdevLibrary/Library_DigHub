@@ -1,42 +1,8 @@
 const { PrismaClient } = require('@prisma/client')
+const { userData, bookData } = require('./fakeData.js') 
 
 const prisma = new PrismaClient()
 
-const userData = [
-  {
-    name: 'Gordon Freeman',
-    email: 'freeman@valve.com',
-    books: {
-      create: [
-        {
-          title: 'Book001',          
-          free: false,
-        },
-        {
-          title: 'Book002',
-          free: false
-        }
-      ],
-    },
-  },
-  {
-    name: 'Alyx',
-    email: 'alyx@valve.com',
-    books: {
-      create: [
-        {
-          title: 'Book003',          
-          free: false,
-        },
-        {
-          title: 'Book004',
-          free: false
-        }
-      ],
-    },
-  },
-
-]
 
 async function main() {
   console.log(`Deleting the old records and start seeding ...`)
@@ -48,6 +14,13 @@ async function main() {
       data: u,
     })
     console.log(`Created user with id: ${user.id}`)
+  }
+
+  for (const u of bookData) {
+    const book = await prisma.book.create({
+      data: u,
+    })
+    console.log(`Created book with id: ${book.id}`)
   }
   // const user = await prisma.user.create({
   //   data: {

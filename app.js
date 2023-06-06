@@ -10,6 +10,22 @@ const port = 3000
 // })
 
 app.use(express.static('views'))
+ 
+
+  //GET Requests
+
+  app.get('/users', async (req, res) => {
+    console.log('There is a GET Request for all users')
+    const users = await prisma.user.findMany()
+    // res.status(200).json(users)   // ??
+    res.json(users)     //INFO: you need to either send a res or end the res. otherwise browserwill hang
+    //res.end()
+  })
+
+  app.get('/books', async (req, res) => {
+    const users = await prisma.book.findMany()
+    res.json(users)
+  })
 
 
   app.post(`/signup`, async (req, res) => {
@@ -94,16 +110,7 @@ app.use(express.static('views'))
   //   res.json(post)
   // })
   
-  app.get('/users', async (req, res) => {
-    const users = await prisma.user.findMany()
-    // res.status(200).json(users)   // ??
-    res.json(users)
-  })
 
-  app.get('/books', async (req, res) => {
-    const users = await prisma.book.findMany()
-    res.json(users)
-  })
   
   app.get('/user/:id/company', async (req, res) => {
     const { id } = req.params

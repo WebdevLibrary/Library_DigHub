@@ -1,5 +1,6 @@
 const express = require('express')
 const { PrismaClient } = require('@prisma/client')
+const routes = require('./routes/api')
 
 const prisma = new PrismaClient()
 const app = express()
@@ -10,7 +11,10 @@ const port = 3000
 // })
 
 app.use(express.static('views'))
- 
+
+// initialise routes
+app.use('/api', routes) 
+
 
   //GET Requests
 
@@ -19,7 +23,7 @@ app.use(express.static('views'))
     const users = await prisma.user.findMany()
     // res.status(200).json(users)   // ??
     res.json(users)     //INFO: you need to either send a res or end the res. otherwise browserwill hang
-    //res.end()
+    //res.end() 
   })
 
   app.get('/books', async (req, res) => {
@@ -50,34 +54,31 @@ app.use(express.static('views'))
     })
   
   app.post(`/bookCreate`, async (req, res) => {
-    const { title, author } = req.body
+    const { title } = req.body
     const result = await prisma.book.create({
       data: {
-        title,       
-        author
+        title,  
       },
     })
     res.json(result)
+  }) 
+  
+  app.put('/book/:id/isFree', async (req, res) => {
+    const { id } = req.params
+  
+    try {
+      const book = await prisma.book.update({
+        where: { id: Number(id) },
+        data: {
+          free: false
+          },
+      })
+  
+      res.json(book)
+    } catch (error) {
+      res.json({ error: `Book with ID ${id} does not exist in the database` })
+    }
   })
-  
-  // app.put('/post/:id/views', async (req, res) => {
-  //   const { id } = req.params
-  
-  //   try {
-  //     const post = await prisma.post.update({
-  //       where: { id: Number(id) },
-  //       data: {
-  //         viewCount: {
-  //           increment: 1,
-  //         },
-  //       },
-  //     })
-  
-  //     res.json(post)
-  //   } catch (error) {
-  //     res.json({ error: `Post with ID ${id} does not exist in the database` })
-  //   }
-  // })
   
   // app.put('/publish/:id', async (req, res) => {
   //   const { id } = req.params

@@ -121,16 +121,28 @@ app.put('/book/:id/isFree', async (req, res) => {
 //   }
 // })
 
-app.delete(`/post/:id`, async (req, res) => {
+
+// delete a book
+app.delete(`/delete_book/:id`, async (req, res) => {
   const { id } = req.params
-  const post = await prisma.post.delete({
+  const book = await prisma.book.delete({
     where: {
       id: Number(id),
     },
   })
-  res.json(post)
+  res.json(book)
 })
 
+// delete a user
+app.delete(`/delete_user/:id`, async (req, res) => {
+  const { id } = req.params
+  const user = await prisma.user.delete({
+    where: {
+      id: Number(id),
+    },
+  })
+  res.json(user)
+})
 
 
 app.get('/user/:id/company', async (req, res) => {

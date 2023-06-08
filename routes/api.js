@@ -15,6 +15,8 @@ router.post('/testapi', function(req,res) {
 });   
 
 router.put('/testapi/:id', function(req,res) {     
+    const para1 = req.params.id
+    console.log(para1)
     res.send({type: "PUT"})
 });   
 

@@ -37,51 +37,60 @@ app.get('/books', async (req, res) => {
 
 
 
-// ToDo: define the case better
+// When a new user registers
 app.post(`/signup`, async (req, res) => {
   console.log(req.body)
-  const { name, email, books } = req.body
-    
-    
-    console.log(name, email, books)
+  const { name, email, company, wish} = req.body        
+  console.log(name, email)
     // const postData = books
     //   ? books.map((book) => {
     //       return { title: book.title || undefined }
     //     })
     //   : []
-  
-    const result = await prisma.user.create({
-      data: {
-        name,
-        email,
-        books: {
-          create: books,
-        },
-      },
-    })
-    res.json(result)
+
+  const result = await prisma.user.create({
+    data: {
+      name,
+      email,
+      company,
+      wish,
+
+      // books: {
+      //   create: books,
+      // },
+    },
   })
+  res.json(result)
+})
 
 
- // create a book 
+// create a book 
 app.post(`/bookCreate`, async (req, res) => {
-  const { title } = req.body
+  const { title, author, publisher, free, QRcode, ISBN } = req.body
   const result = await prisma.book.create({
     data: {
-      title,  
+      title,
+      author,
+      publisher,
+      free,
+      QRcode,
+      ISBN,  
     },
   })
   res.json(result)
 }) 
 
+
+//update data of a book (ToDo)
 app.put('/book/:id/isFree', async (req, res) => {
   const { id } = req.params
+  console.log(req.params)
 
   try {
     const book = await prisma.book.update({
       where: { id: Number(id) },
       data: {
-        free: false
+        free: true
         },
     })
 
@@ -112,15 +121,15 @@ app.put('/book/:id/isFree', async (req, res) => {
 //   }
 // })
 
-// app.delete(`/post/:id`, async (req, res) => {
-//   const { id } = req.params
-//   const post = await prisma.post.delete({
-//     where: {
-//       id: Number(id),
-//     },
-//   })
-//   res.json(post)
-// })
+app.delete(`/post/:id`, async (req, res) => {
+  const { id } = req.params
+  const post = await prisma.post.delete({
+    where: {
+      id: Number(id),
+    },
+  })
+  res.json(post)
+})
 
 
 

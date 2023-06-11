@@ -29,27 +29,34 @@ router.get('/users', async (req, res) => {
 // create a user 
 router.post(`/signup`, async (req, res) => {
     console.log(req.body)
-    const { name, email, company, wish} = req.body        
-    console.log(name, email)
+    const { name, email, company, wish, books} = req.body        
+    console.log(books)
         // const postData = books
         //   ? books.map((book) => {
         //       return { title: book.title || undefined }
         //     })
         //   : []
 
-    const result = await prisma.user.create({
-        data: {
-        name,
-        email,
-        company,
-        wish,
-
-        // books: {
-        //   create: books,
-        // },
-        },
-    })
-    res.json(result)
+    try {
+        const result = await prisma.user.create({
+            data: {
+                name,
+                email,
+                company,
+                wish,            
+                books: {
+                  create: [{
+                    title: books.title
+                  }]
+                },
+            },
+        })
+        res.json(result)
+    } catch(error) {
+        //console.log("error:::" , error)
+        res.json({error: `A User with ${error?.meta?.target} exist already`})  
+        //res.json(error)       
+    }    
 })
   
   
@@ -71,10 +78,30 @@ router.post(`/bookCreate`, async (req, res) => {
         res.json(result)
     } catch(error) {
         console.log("error:;::" , error)
-       // res.json({error: `A book with ${error?.meta?.target} exist already`})  
-        res.json(error)       
+        res.json({error: `A book with ${error?.meta?.target} exist already`})  
+        //res.json(error)       
     }        
 }) 
+
+
+//update data of a user 
+router.put('/user/:id', async (req, res) => {
+    const { id } = req.params
+    const{ name, company, wish, books } = req.body
+    console.log("books: ", books)
+
+    try {
+        const user = await prisma.user.update({
+            where: { id: Number(id) },
+            data: {
+                update: books
+            },
+        })
+        res.json(user)
+    } catch (error) {
+        res.json({ error: `Error occured with user ID ${id}` })
+    }   
+})
 
 
 //update data of a book 
@@ -100,6 +127,9 @@ router.put('/book/:id', async (req, res) => {
         res.json({ error: `Book with ID ${id} does not exist in the database` })
     }   
 })
+
+
+
   
   // router.put('/publish/:id', async (req, res) => {
   //   const { id } = req.params

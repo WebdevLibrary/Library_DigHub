@@ -11,12 +11,13 @@ datasource db {
 }
 
 model User {
-    id      Int     @id @default(autoincrement())
-    name    String
-    email   String? @unique
-    company String?
-    wish    String?
-    books   Book[]
+    id       Int        @id @default(autoincrement())
+    name     String
+    email    String?    @unique
+    company  String?
+    wish     String?
+    books    Book[]
+    Wishlist Wishlist[]
 }
 
 model Book {
@@ -24,8 +25,18 @@ model Book {
     title     String
     author    String?
     publisher String?
-    free      Boolean?
+    isFree    Boolean?
     QRcode    String?  @unique
     ISBN      String?  @unique
+    users     User[]
+}
+
+model Wishlist {
+    id        Int     @id @default(autoincrement())
+    title     String
+    author    String?
+    publisher String?
+    QRcode    String? @unique
+    ISBN      String? @unique
     users     User[]
 }

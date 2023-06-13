@@ -9,7 +9,7 @@ const prisma = new PrismaClient()
 
 
 
-// fetch all users
+// get all users
 router.get('/users', async (req, res) => {
     console.log('There is a GET Request for all users')
     const users = await prisma.user.findMany()
@@ -18,10 +18,27 @@ router.get('/users', async (req, res) => {
     //res.end() 
   })
   
-// fetch all books
+// get all books
     router.get('/books', async (req, res) => {
     const books = await prisma.book.findMany()
     res.json(books)
+})
+
+// get all wishlist
+router.get('/wishlist', async (req, res) => {
+    const wishList = await prisma.wishlist.findMany()
+    res.json(wishList)
+})
+
+
+// get one user  
+router.get(`/users/:id`, async (req, res) => {
+    const { id } = req.params
+
+    const user = await prisma.user.findUnique({
+        where: { id: Number(id) },
+    })
+    res.json(user)
 })
 
 
@@ -31,6 +48,8 @@ router.post(`/signup`, async (req, res) => {
     console.log(req.body)
     const { name, email, company, wish, books} = req.body        
     console.log(books)
+
+    // code to make a array of books if there is any and if zero then returns an empty array
         // const postData = books
         //   ? books.map((book) => {
         //       return { title: book.title || undefined }
@@ -62,7 +81,7 @@ router.post(`/signup`, async (req, res) => {
   
 // create a book 
 router.post(`/bookCreate`, async (req, res) => {
-    const { title, author, publisher, free, QRcode, ISBN } = req.body
+    const { title, author, publisher, isFree, QRcode, ISBN } = req.body
 
     try {
         const result = await prisma.book.create({
@@ -70,7 +89,7 @@ router.post(`/bookCreate`, async (req, res) => {
                 title,
                 author,
                 publisher,
-                free,
+                isFree,
                 QRcode,
                 ISBN,  
             },
@@ -82,6 +101,40 @@ router.post(`/bookCreate`, async (req, res) => {
         //res.json(error)       
     }        
 }) 
+
+
+// create a wish book 
+router.post(`/wishabook`, async (req, res) => {
+    const { title, author, publisher, QRcode, ISBN } = req.body
+
+    try {
+        const result = await prisma.book.create({
+            data: {
+                title,
+                author,
+                publisher,
+                QRcode,
+                ISBN,  
+            },
+        })
+        res.json(result)
+    } catch(error) {
+        console.log("error:;::" , error)
+        res.json({error: `A book with ${error?.meta?.target} exist already`})  
+        //res.json(error)       
+    }        
+}) 
+
+
+
+
+
+
+
+
+
+
+
 
 
 //update data of a user 
@@ -108,7 +161,7 @@ router.put('/user/:id', async (req, res) => {
 //update data of a book 
 router.put('/book/:id', async (req, res) => {
     const { id } = req.params
-    const{ title, author, publisher, free, QRcode, ISBN } = req.body
+    const{ title, author, publisher, isFree, QRcode, ISBN } = req.body
     console.log(req.body)
 
     try {
@@ -118,7 +171,7 @@ router.put('/book/:id', async (req, res) => {
             title,
             author,
             publisher,
-            free,
+            isFree,
             QRcode,
             ISBN,
         },
@@ -185,6 +238,7 @@ router.put('/NOTbook2user/:id', async (req, res) => {
 })
 
 
+//
 
 
 
@@ -240,31 +294,20 @@ router.delete(`/delete_user/:id`, async (req, res) => {
     res.json(user)
 })
 
-  
-router.get('/user/:id/company', async (req, res) => {
+// delete a wish book
+router.delete(`/delete_wishbook/:id`, async (req, res) => {
     const { id } = req.params
-
-    const drafts = await prisma.user
-        .findUnique({
+    const wishBook = await prisma.wishlist.delete({
         where: {
-            id: Number(id),
+        id: Number(id),
         },
-        })
-        .posts({
-        where: { published: false },
-        })
-
-    res.json(drafts)
-})
-  
-router.get(`/users/:id`, async (req, res) => {
-    const { id } = req.params
-
-    const user = await prisma.user.findUnique({
-        where: { id: Number(id) },
     })
-    res.json(user)
+    res.json(wishBook)
 })
+
+  
+
+
   
   // router.get('/feed', async (req, res) => {
   //   const { searchString, skip, take, orderBy } = req.query

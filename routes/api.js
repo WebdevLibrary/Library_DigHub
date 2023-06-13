@@ -26,13 +26,13 @@ router.get('/users', async (req, res) => {
 
 // get all wishlist
 router.get('/wishlist', async (req, res) => {
-    const wishList = await prisma.wishlist.findMany()
-    res.json(wishList)
+    const wishLists = await prisma.wishlist.findMany()
+    res.json(wishLists)
 })
 
 
 // get one user  
-router.get(`/users/:id`, async (req, res) => {
+router.get(`/user/:id`, async (req, res) => {
     const { id } = req.params
 
     const user = await prisma.user.findUnique({
@@ -40,6 +40,27 @@ router.get(`/users/:id`, async (req, res) => {
     })
     res.json(user)
 })
+
+// get one book  
+router.get(`/book/:id`, async (req, res) => {
+    const { id } = req.params
+
+    const book = await prisma.book.findUnique({
+        where: { id: Number(id) },
+    })
+    res.json(book)
+})
+
+// get one book from wishlist
+router.get(`/wishbook/:id`, async (req, res) => {
+    const { id } = req.params
+
+    const wishbook = await prisma.book.findUnique({
+        where: { id: Number(id) },
+    })
+    res.json(wishbook)
+})
+
 
 
 
@@ -101,6 +122,33 @@ router.post(`/bookCreate`, async (req, res) => {
         //res.json(error)       
     }        
 }) 
+
+
+
+// create a book for the wishlist
+router.post(`/wishListCreate`, async (req, res) => {
+    const { title, author, publisher, QRcode, ISBN } = req.body
+
+    try {
+        const result = await prisma.wishlist.create({
+            data: {
+                title,
+                author,
+                publisher,               
+                QRcode,
+                ISBN,  
+            },
+        })
+        res.json(result)
+    } catch(error) {
+        console.log("error:" , error)
+        res.json({error: `Error with the book with id: ${error?.meta?.target} `})  
+        //res.json(error)       
+    }        
+}) 
+
+
+
 
 
 // create a wish book 
@@ -166,15 +214,15 @@ router.put('/book/:id', async (req, res) => {
 
     try {
         const book = await prisma.book.update({
-        where: { id: Number(id) },
-        data: {
-            title,
-            author,
-            publisher,
-            isFree,
-            QRcode,
-            ISBN,
-        },
+            where: { id: Number(id) },
+            data: {
+                title,
+                author,
+                publisher,
+                isFree,
+                QRcode,
+                ISBN,
+            },
         })
         res.json(book)
     } catch (error) {
@@ -184,7 +232,7 @@ router.put('/book/:id', async (req, res) => {
 
 
 
-//connect a book to a user
+//connect a book to a user (when a user borrows a book)
 
 router.put('/book2user/:id', async (req, res) => {
     const userID  = req.params.id   
@@ -204,6 +252,15 @@ router.put('/book2user/:id', async (req, res) => {
                }
             },
         })
+        //if the book is borrowed, make is free false
+        const book = await prisma.book.update({
+            where: { id: Number(bookID) },
+            data: {
+                isFree: false,
+               
+            },
+        })
+
         res.json(user)
     } catch (error) {
         res.json({ error: `Error occured with user ID ${userID}` })
@@ -229,6 +286,15 @@ router.put('/NOTbook2user/:id', async (req, res) => {
                     id: Number(bookID)
                 }
                }
+            },
+        })
+
+        //if the book is given back, make is free true
+        const book = await prisma.book.update({
+            where: { id: Number(bookID) },
+            data: {
+                isFree: true,
+               
             },
         })
         res.json(user)

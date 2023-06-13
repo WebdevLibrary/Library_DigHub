@@ -234,9 +234,9 @@ router.put('/book/:id', async (req, res) => {
 
 //connect a book to a user (when a user borrows a book)
 
-router.put('/book2user/:id', async (req, res) => {
-    const userID  = req.params.id   
-    const bookID  = req.body.id   
+router.put('/book2user/:id1/:id2', async (req, res) => {
+    const userID  = req.params.id1   
+    const bookID  = req.params.id2   
 
     // console.log(bookID)
     // console.log(req.params)
@@ -270,9 +270,9 @@ router.put('/book2user/:id', async (req, res) => {
 
 //disconnect a book from a user
 
-router.put('/NOTbook2user/:id', async (req, res) => {
-    const userID  = req.params.id   
-    const bookID  = req.body.id   
+router.put('/NOTbook2user/:id1/:id2', async (req, res) => {
+    const userID  = req.params.id1   
+    const bookID  = req.params.id2  
 
     // console.log(bookID)
     // console.log(req.params)
@@ -302,6 +302,53 @@ router.put('/NOTbook2user/:id', async (req, res) => {
         res.json({ error: `Error occured with user ID ${userID}` })
     }   
 })
+
+
+
+// move a book from wishlist to normal book DB
+
+router.put('/wish2book/:id', async (req, res) => {
+    const wishedBookID  = req.params.id
+    console.log(wishedBookID)
+   
+    // console.log(bookID)
+    // console.log(req.params)
+
+    try {
+        const wishbook = await prisma.wishlist.findUnique({
+            where: { id: Number(wishedBookID) },
+        })
+        //console.log(wishbook)
+
+        const bookTakenFromWishList = await prisma.book.create({
+            data: {
+                title: wishbook.title,
+                author: wishbook.author,
+                publisher: wishbook.publisher,
+                isFree: false,
+                QRcode: wishbook.QRcode,
+                ISBN: wishbook.ISBN,  
+            },
+        })
+        res.json(bookTakenFromWishList)
+    } catch (error) {
+        res.json({ error: `Error occured with book ID ${wishedBookID}` })
+    }   
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //

@@ -87,14 +87,15 @@ router.post(`/bookCreate`, async (req, res) => {
 //update data of a user 
 router.put('/user/:id', async (req, res) => {
     const { id } = req.params
-    const{ name, company, wish, books } = req.body
-    console.log("books: ", books)
+    const{ name, company, wish } = req.body   
 
     try {
         const user = await prisma.user.update({
             where: { id: Number(id) },
             data: {
-                update: books
+                name,
+                company,
+                wish
             },
         })
         res.json(user)
@@ -127,6 +128,64 @@ router.put('/book/:id', async (req, res) => {
         res.json({ error: `Book with ID ${id} does not exist in the database` })
     }   
 })
+
+
+
+//connect a book to a user
+
+router.put('/book2user/:id', async (req, res) => {
+    const userID  = req.params.id   
+    const bookID  = req.body.id   
+
+    // console.log(bookID)
+    // console.log(req.params)
+
+    try {
+        const user = await prisma.user.update({
+            where: { id: Number(userID) },
+            data: {
+               books: {
+                connect: {
+                    id: Number(bookID)
+                }
+               }
+            },
+        })
+        res.json(user)
+    } catch (error) {
+        res.json({ error: `Error occured with user ID ${userID}` })
+    }   
+})
+
+
+//disconnect a book from a user
+
+router.put('/NOTbook2user/:id', async (req, res) => {
+    const userID  = req.params.id   
+    const bookID  = req.body.id   
+
+    // console.log(bookID)
+    // console.log(req.params)
+
+    try {
+        const user = await prisma.user.update({
+            where: { id: Number(userID) },
+            data: {
+               books: {
+                disconnect: {
+                    id: Number(bookID)
+                }
+               }
+            },
+        })
+        res.json(user)
+    } catch (error) {
+        res.json({ error: `Error occured with user ID ${userID}` })
+    }   
+})
+
+
+
 
 
 

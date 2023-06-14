@@ -14,20 +14,20 @@ router.get('/users', async (req, res) => {
     //console.log('There is a GET Request for all users')
     const users = await prisma.user.findMany()
     // res.status(200).json(users)   // ??
-    res.json(users)     //INFO: you need to either send a res or end the res. otherwise browserwill hang
+    res.status(200).json(users)     //INFO: you need to either send a res or end the res. otherwise browserwill hang
     //res.end() 
   })
   
 // get all books
 router.get('/books', async (req, res) => {
     const books = await prisma.book.findMany()
-    res.json(books)
+    res.status(200).json(books)
 })
 
 // get all wishlist
 router.get('/wishlist', async (req, res) => {
     const wishLists = await prisma.wishlist.findMany()
-    res.json(wishLists)
+    res.status(200).json(wishLists)
 })
 
 
@@ -38,7 +38,7 @@ router.get(`/user/:id`, async (req, res) => {
     const user = await prisma.user.findUnique({
         where: { id: Number(id) },
     })
-    res.json(user)
+    res.status(200).json(user)
 })
 
 // get one book  
@@ -48,7 +48,7 @@ router.get(`/book/:id`, async (req, res) => {
     const book = await prisma.book.findUnique({
         where: { id: Number(id) },
     })
-    res.json(book)
+    res.status(200).json(book)
 })
 
 // get one book from wishlist
@@ -58,7 +58,7 @@ router.get(`/wishbook/:id`, async (req, res) => {
     const wishbook = await prisma.book.findUnique({
         where: { id: Number(id) },
     })
-    res.json(wishbook)
+    res.status(200).json(wishbook)
 })
 
 
@@ -92,10 +92,10 @@ router.post(`/signup`, async (req, res) => {
                 },
             },
         })
-        res.json(result)
+        res.status(200).json(result)
     } catch(error) {
         //console.log("error:::" , error)
-        res.json({error: `A User with ${error?.meta?.target} exist already`})  
+        res.status(500).json({error: `A User with ${error?.meta?.target} exist already`})  
         //res.json(error)       
     }    
 })
@@ -116,10 +116,10 @@ router.post(`/bookCreate`, async (req, res) => {
                 ISBN,  
             },
         })
-        res.json(result)
+        res.status(200).json(result)
     } catch(error) {
         console.log("error:;::" , error)
-        res.json({error: `A book with ${error?.meta?.target} exist already`})  
+        res.status(500).json({error: `A book with ${error?.meta?.target} exist already`})  
         //res.json(error)       
     }        
 }) 
@@ -140,10 +140,10 @@ router.post(`/wishListCreate`, async (req, res) => {
                 ISBN,  
             },
         })
-        res.json(result)
+        res.status(200).json(result)
     } catch(error) {
         console.log("error:" , error)
-        res.json({error: `Error with the book with id: ${error?.meta?.target} `})  
+        res.status(500).json({error: `Error with the book with id: ${error?.meta?.target} `})  
         //res.json(error)       
     }        
 }) 
@@ -166,9 +166,9 @@ router.put('/user/:id', async (req, res) => {
                 wish
             },
         })
-        res.json(user)
+        res.status(200).json(user)
     } catch (error) {
-        res.json({ error: `Error occured with user ID ${id}` })
+        res.status(500).json({ error: `Error occured with user ID ${id}` })
     }   
 })
 
@@ -191,9 +191,9 @@ router.put('/book/:id', async (req, res) => {
                 ISBN,
             },
         })
-        res.json(book)
+        res.status(200).json(book)
     } catch (error) {
-        res.json({ error: `Book with ID ${id} does not exist in the database` })
+        res.status(500).json({ error: `Book with ID ${id} does not exist in the database` })
     }   
 })
 
@@ -227,10 +227,9 @@ router.put('/book2user/:id1/:QR', async (req, res) => {
                
             },
         })
-
-        res.json(user)
+        res.status(200).json(user)
     } catch (error) {
-        res.json({ error: `Error occured with user ID ${userID}` })
+        res.status(500).json({ error: `Error occured with user ID ${userID}` })
     }   
 })
 
@@ -264,9 +263,9 @@ router.put('/NOTbook2user/:id1/:id2', async (req, res) => {
                
             },
         })
-        res.json(user)
+        res.status(200).json(user)
     } catch (error) {
-        res.json({ error: `Error occured with user ID ${userID}` })
+        res.status(500).json({ error: `Error occured with user ID ${userID}` })
     }   
 })
 
@@ -297,9 +296,9 @@ router.put('/wish2book/:id', async (req, res) => {
                 ISBN: wishbook.ISBN,  
             },
         })
-        res.json(bookTakenFromWishList)
+        res.status(200).json(bookTakenFromWishList)
     } catch (error) {
-            res.json({ error: `Error occured with book ID ${wishedBookID}` })
+        res.status(500).json({ error: `Error occured with book ID ${wishedBookID}` })
     }   
 })
 
@@ -360,7 +359,7 @@ router.delete(`/delete_book/:id`, async (req, res) => {
         id: Number(id),
         },
     })
-    res.json(book)
+    res.status(200).json(book)
 })
 
 // delete a user
@@ -371,7 +370,7 @@ router.delete(`/delete_user/:id`, async (req, res) => {
         id: Number(id),
         },
     })
-    res.json(user)
+    res.status(200).json(user)
 })
 
 // delete a wish book
@@ -382,13 +381,12 @@ router.delete(`/delete_wishbook/:id`, async (req, res) => {
         id: Number(id),
         },
     })
-    res.json(wishBook)
+    res.status(200).json(wishBook)
 })
 
   
 
-
-  
+//example query code
   // router.get('/feed', async (req, res) => {
   //   const { searchString, skip, take, orderBy } = req.query
   
@@ -418,9 +416,4 @@ router.delete(`/delete_wishbook/:id`, async (req, res) => {
   // })
 
 
-
-
-  
-
-
-module.exports = router; 
+  module.exports = router; 

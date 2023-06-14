@@ -398,9 +398,10 @@ router.delete(`/delete_user/:id`, async (req, res) => {
 // delete a wish book
 router.delete(`/delete_wishbook/:id`, async (req, res) => {
     const { id } = req.params
+
     const wishBook = await prisma.wishlist.delete({
         where: {
-        id: Number(id),
+            id: Number(id),
         },
     })
     res.status(200).json(wishBook)

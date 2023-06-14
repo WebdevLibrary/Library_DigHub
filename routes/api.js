@@ -7,6 +7,8 @@ const prisma = new PrismaClient()
 // '/api' we dont need 
 
 
+// for search learn prisma "contains"
+
 
 
 // get all users
@@ -41,7 +43,7 @@ router.get(`/user/:id`, async (req, res) => {
     res.status(200).json(user)
 })
 
-// get one book  
+// get one book by ID  
 router.get(`/book/:id`, async (req, res) => {
     const { id } = req.params
 
@@ -51,11 +53,31 @@ router.get(`/book/:id`, async (req, res) => {
     res.status(200).json(book)
 })
 
+
+
+// ToDo: fix it
+// get one book by name    
+router.get(`/bookgetName/:bookTitle`, async (req, res) => {
+    const { bookTitle } = req.params
+    console.log(typeof bookTitle)
+
+    try {
+        const book = await prisma.book.findMany({
+            where: { title: bookTitle},
+        })
+        res.status(200).json(book)
+    } catch(error){
+        res.status(500).json(error)
+    }   
+})
+
+
+
 // get one book from wishlist
 router.get(`/wishbook/:id`, async (req, res) => {
     const { id } = req.params
 
-    const wishbook = await prisma.book.findUnique({
+    const wishbook = await prisma.wishlist.findUnique({
         where: { id: Number(id) },
     })
     res.status(200).json(wishbook)

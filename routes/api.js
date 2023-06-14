@@ -11,7 +11,7 @@ const prisma = new PrismaClient()
 
 // get all users
 router.get('/users', async (req, res) => {
-    console.log('There is a GET Request for all users')
+    //console.log('There is a GET Request for all users')
     const users = await prisma.user.findMany()
     // res.status(200).json(users)   // ??
     res.json(users)     //INFO: you need to either send a res or end the res. otherwise browserwill hang
@@ -19,7 +19,7 @@ router.get('/users', async (req, res) => {
   })
   
 // get all books
-    router.get('/books', async (req, res) => {
+router.get('/books', async (req, res) => {
     const books = await prisma.book.findMany()
     res.json(books)
 })
@@ -67,9 +67,10 @@ router.get(`/wishbook/:id`, async (req, res) => {
 // create a user 
 router.post(`/signup`, async (req, res) => {
     console.log(req.body)
-    const { name, email, company, wish, books} = req.body        
+    const { name, email, company, wish, books } = req.body        
     console.log(books)
 
+    // ToDo:
     // code to make a array of books if there is any and if zero then returns an empty array
         // const postData = books
         //   ? books.map((book) => {
@@ -151,40 +152,6 @@ router.post(`/wishListCreate`, async (req, res) => {
 
 
 
-// create a wish book 
-router.post(`/wishabook`, async (req, res) => {
-    const { title, author, publisher, QRcode, ISBN } = req.body
-
-    try {
-        const result = await prisma.book.create({
-            data: {
-                title,
-                author,
-                publisher,
-                QRcode,
-                ISBN,  
-            },
-        })
-        res.json(result)
-    } catch(error) {
-        console.log("error:;::" , error)
-        res.json({error: `A book with ${error?.meta?.target} exist already`})  
-        //res.json(error)       
-    }        
-}) 
-
-
-
-
-
-
-
-
-
-
-
-
-
 //update data of a user 
 router.put('/user/:id', async (req, res) => {
     const { id } = req.params
@@ -232,11 +199,11 @@ router.put('/book/:id', async (req, res) => {
 
 
 
-//connect a book to a user (when a user borrows a book)
+//connect a book to a user (when a user borrows a book with QRcode)
 
-router.put('/book2user/:id1/:id2', async (req, res) => {
+router.put('/book2user/:id1/:QR', async (req, res) => {
     const userID  = req.params.id1   
-    const bookID  = req.params.id2   
+    const bookQR  = req.params.QR  
 
     // console.log(bookID)
     // console.log(req.params)
@@ -247,14 +214,14 @@ router.put('/book2user/:id1/:id2', async (req, res) => {
             data: {
                books: {
                 connect: {
-                    id: Number(bookID)
+                    QRcode: bookQR
                 }
                }
             },
         })
         //if the book is borrowed, make is free false
         const book = await prisma.book.update({
-            where: { id: Number(bookID) },
+            where: { QRcode: bookQR },
             data: {
                 isFree: false,
                
@@ -332,7 +299,7 @@ router.put('/wish2book/:id', async (req, res) => {
         })
         res.json(bookTakenFromWishList)
     } catch (error) {
-        res.json({ error: `Error occured with book ID ${wishedBookID}` })
+            res.json({ error: `Error occured with book ID ${wishedBookID}` })
     }   
 })
 

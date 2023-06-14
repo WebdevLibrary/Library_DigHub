@@ -1,0 +1,152 @@
+// to be finished..
+
+
+openapi: 3.0.0
+info:
+  title: Your API
+  version: 1.0.0
+paths:
+  /users:
+    get:
+      summary: Get all users
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+  /books:
+    get:
+      summary: Get all books
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
+  /wishlist:
+    get:
+      summary: Get all wishlist items
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Wishlist'
+  /user/{id}:
+    get:
+      summary: Get one user
+      parameters:
+        - name: id
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /book/{id}:
+    get:
+      summary: Get one book
+      parameters:
+        - name: id
+          in: path
+          description: Book ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+  /wishbook/{id}:
+    get:
+      summary: Get one book from wishlist
+      parameters:
+        - name: id
+          in: path
+          description: Wishlist Item ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+  /signup:
+    post:
+      summary: Create a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /bookCreate:
+    post:
+      summary: Create a book
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBookRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+  /wishListCreate:
+    post:
+      summary: Create a book for the wishlist
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateWishlistRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wishlist'
+  /user/{id}:
+    put:
+      summary: Update data of a user
+      parameters:
+        - name: id
+          in: path
+          description: User ID
+          required: true
+          schema

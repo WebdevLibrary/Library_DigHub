@@ -6,8 +6,6 @@
 // ToDo: DateTime for borrowing a book or leaving a book
 
 
-
-
 generator client {
     provider = "prisma-client-js"
 }

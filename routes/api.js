@@ -9,7 +9,7 @@ const prisma = new PrismaClient()
 
 // for search learn prisma "contains"
 
-
+// ToDo: for each endpoint / another file   "Controller File"
 
 // get all users
 router.get('/users', async (req, res) => {
@@ -54,13 +54,28 @@ router.get(`/book/:id`, async (req, res) => {
 })
 
 
+// get a book by QR code
 
-// ToDo: fix it
+router.get(`/bookgetQR/:bookQR`, async (req, res) => {
+    const { bookQR } = req.params
+   // console.log("bookqr =", bookQR)
+   
+    try {
+        const book = await prisma.book.findUnique({
+            where: { QRcode: bookQR },
+        })
+        res.status(200).json(book)
+    } catch(error){
+        res.status(500).json(error)
+    }   
+})
+
+
+
 // get one book by name    
 router.get(`/bookgetName/:bookTitle`, async (req, res) => {
     const { bookTitle } = req.params
-    console.log(typeof bookTitle)
-
+   
     try {
         const book = await prisma.book.findMany({
             where: { title: bookTitle},
@@ -257,6 +272,7 @@ router.put('/book2user/:id1/:QR', async (req, res) => {
 
 
 //disconnect a book from a user
+// ToDo: book QR Code
 
 router.put('/NOTbook2user/:id1/:id2', async (req, res) => {
     const userID  = req.params.id1   
@@ -266,6 +282,9 @@ router.put('/NOTbook2user/:id1/:id2', async (req, res) => {
     // console.log(req.params)
 
     try {
+        
+        // ToDo: if(isFree)  borrow if isFre true and give back if  is fedfad
+
         const user = await prisma.user.update({
             where: { id: Number(userID) },
             data: {
@@ -293,6 +312,16 @@ router.put('/NOTbook2user/:id1/:id2', async (req, res) => {
 
 
 
+// ToDo:  which book have a given user
+
+
+// ToDo:  which users have a given book
+
+
+// ToDo:  which users have a given wish list and vice versa 
+
+
+
 // move a book from wishlist to normal book DB
 
 router.put('/wish2book/:id', async (req, res) => {
@@ -306,6 +335,9 @@ router.put('/wish2book/:id', async (req, res) => {
         const wishbook = await prisma.wishlist.findUnique({
             where: { id: Number(wishedBookID) },
         })
+
+        // ToDo: delete this book with this id
+    
         //console.log(wishbook)
 
         const bookTakenFromWishList = await prisma.book.create({
@@ -313,7 +345,7 @@ router.put('/wish2book/:id', async (req, res) => {
                 title: wishbook.title,
                 author: wishbook.author,
                 publisher: wishbook.publisher,
-                isFree: false,
+                isFree: true,
                 QRcode: wishbook.QRcode,
                 ISBN: wishbook.ISBN,  
             },
@@ -323,23 +355,6 @@ router.put('/wish2book/:id', async (req, res) => {
         res.status(500).json({ error: `Error occured with book ID ${wishedBookID}` })
     }   
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//
 
 
 
@@ -367,10 +382,6 @@ router.put('/wish2book/:id', async (req, res) => {
   // })
   
   
-// fetch a book by QR code
-
-
-
 
 
 // delete a book

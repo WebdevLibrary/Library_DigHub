@@ -20,9 +20,8 @@ model User {
     name     String
     email    String?    @unique
     company  String?
-    wish     String?
     books    Book[]
-    Wishlist Wishlist[]
+    wishlist Wishlist[]
 }
 
 model Book {

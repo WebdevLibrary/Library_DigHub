@@ -4,11 +4,6 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const apiController = require('../controllers/apiController')
 
-// mount route handlers onto router object
-// '/api' we dont need 
-
-// for search learn prisma "contains"
-
 
 
 
@@ -20,17 +15,21 @@ router.put('/book2user/:id1/:QR', apiController.connectBook2User)
 router.put('/NOTbook2user/:id1/:id2', apiController.disconnectBookFromUser)
 
 // move a book from wishlist to normal book DB
-router.put('/wish2book/:id', apiController.moveBookFromWishList2BookDB)
+router.put('/wished2book/:id', apiController.moveBookFromWishList2BookDB)
+
+// users makes a wish list, a wished book will be connected to him 
+router.put('/wished2book/:userID/:wishBookID', apiController.connectwishedbook2user)
+
+//get the books of a given user by ID
+router.get('/getbooksofusers/:id', apiController.getBooksOfUsersByID)
 
 
-
-// ToDo:  which book have a given user
-
-
-// ToDo:  which users have a given book
+// get the borrowers of a book byID
+router.get('/getborrowersofbooks/:id', apiController.getBorrowersOfBooksByID)
 
 
-// ToDo:  which users have a given wish list and vice versa 
+//get the wished books of a given user by ID 
+router.get('/getwishlistofusers/:id', apiController.getWishesOfUsers)
 
 
 
@@ -51,7 +50,7 @@ router.put('/wish2book/:id', apiController.moveBookFromWishList2BookDB)
 
 //     const updatedPost = await prisma.post.update({
 //       where: { id: Number(id) || undefined },
-//       data: { published: !postData.published || undefined },
+//       data: { published: !postData.published || undefined },      ///ToDo:   ///// why "!"
 //     })
 //     res.json(updatedPost)
 //   } catch (error) {

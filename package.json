@@ -2,9 +2,9 @@
   "name": "library_dighub",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "dev": "node app.js"
+    "dev": "node server.js"
   },
   "repository": {
     "type": "git",

@@ -40,7 +40,7 @@ const connectBook2User = async (req, res) => {
 // ToDo: disconnet using QR Code
 const disconnectBookFromUser = async (req, res) => {
     const userID  = req.params.id1   
-    const bookID  = req.params.id2  
+    const bookQR  = req.params.QR  
 
     // console.log(bookID)
     // console.log(req.params)
@@ -54,7 +54,7 @@ const disconnectBookFromUser = async (req, res) => {
             data: {
                books: {
                 disconnect: {
-                    id: Number(bookID)
+                    QRcode: bookQR
                 }
                }
             },
@@ -62,7 +62,7 @@ const disconnectBookFromUser = async (req, res) => {
 
         //if the book is given back, make is free true
         const book = await prisma.book.update({
-            where: { id: Number(bookID) },
+            where: { QRcode: bookQR },
             data: {
                 isFree: true,
                

@@ -11,8 +11,8 @@ const apiController = require('../controllers/apiController')
 router.put('/book2user/:id1/:QR', apiController.connectBook2User)      
 
 
-//when user gives the book back
-router.put('/NOTbook2user/:id1/:id2', apiController.disconnectBookFromUser)
+//when user gives the book back with QR Code
+router.put('/NOTbook2user/:id1/:QR', apiController.disconnectBookFromUser)
 
 // move a book from wishlist to normal book DB
 router.put('/wished2book/:id', apiController.moveBookFromWishList2BookDB)
